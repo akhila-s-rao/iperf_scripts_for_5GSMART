@@ -2,11 +2,11 @@
 # This script is run at the client
 
 num_steps=11                 # This includes the 0 step as well when UE2 sends 0 bps
-brate_increase_per_step=1   # Mbps
-time_step=3                 # seconds
+brate_increase_per_step=10   # Mbps
+time_step=50                 # seconds
 start_port_num=11000
 pkt_len=1450                 # Bytes
-report_interval=1         # seconds # This is the interval with which iperf prints a new measurement report line.
+report_interval=0.01         # seconds # This is the interval with which iperf prints a new measurement report line.
 server_ip='127.0.0.1'        # IP address of the server we are sending packets to 
 client_ip='127.0.0.1'           # IP address of the interface to bind to. This is the IP addr of the interface I want to send from
 
