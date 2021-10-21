@@ -1,12 +1,39 @@
-num_steps=3
-start_port_num=11000
-report_interval=0.01   # seconds
+#!/bin/bash
+# This script is run at the server
 
-for i in {0..2} # CHANGE THIS TO num_steps-1
+num_steps=11             # This includes the zero step 
+time_step=3             # seconds 
+start_port_num=11000
+report_interval=1       # seconds
+server_ip='127.0.0.1'   # IP address of the interface to bind to. This is the IP addr of the interface I want to recv on
+
+
+
+
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+
+function ctrl_c() {
+        sudo pkill iperf
+        echo "kill iperf"
+	exit 0
+}
+
+
+
+
+
+total_time=$(($time_step*$num_steps))
+echo 'Iperf server will run for' $total_time 'seconds'
+
+for ((i=1;i<num_steps;i++))
 do
-	echo $i
 	port_num=$(($start_port_num+$i))
-	echo 'Starting server at port_num ' $port_num
-	iperf -s -u -i $report_interval -p $port_num -e -y C > iperf_server_ul_stream$i.log &
-	sleep 0.1
+	echo 'Starting server on port_num ' $port_num
+	iperf -s -u -i $report_interval -p $port_num -B $server_ip -e -y C > iperf_server_ul_stream$i.log &
+	#iperf -s -u -i $report_interval -p $port_num -B $server_ip > iperf_server_ul_stream$i.log &
+	sleep 0.1 # A short sleepy time before starting the next server 
 done
+sleep $(($total_time+5))
+sudo pkill iperf
+echo 'DONE'
